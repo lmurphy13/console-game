@@ -19,7 +19,8 @@ typedef struct {
 	int y;
 	int dx;
 	int dy;
-	int size;
+	int height;
+	int width;
 }ball;
 
 void updateBall(ball *);
@@ -39,9 +40,10 @@ int main() {
 	ball myBall;
 	myBall.x = 10;
 	myBall.y = 10;
-	myBall.dx = 3;
-	myBall.dy = 3;
-	myBall.size = 3;
+	myBall.dx = 2;
+	myBall.dy = 2;
+	myBall.height = 3;
+	myBall.width = 5;
 
 	ball *pBall = &myBall;
 
@@ -51,6 +53,7 @@ int main() {
 		updateBall(pBall);
 		printScreen();
 		initScreen();
+		usleep(200 * 1000);
 	}
 	return 0;
 }
@@ -75,17 +78,24 @@ int initScreen() {
 
 void printScreen() {
 	int rows, cols;
-	printf("  \t");
-	for (cols = 0; cols < SCREEN_W; cols++) {
-		printf("%d", cols % 10);
+
+	printf("\n");
+	for (cols = 0; cols < SCREEN_W + 1; cols++) {
+		printf("-");
 	}
 	printf("\n");
+
 	for (rows = 0; rows < SCREEN_H; rows++) {
-		printf("%d.\t", rows);
+		//printf("%d.\t", rows);
+		printf("|");
 		for (cols = 0; cols < SCREEN_W; cols++) {
 			printf("%c", screen[rows][cols]);
 		}
-		printf("\n");
+		printf("|\n");
+	}
+
+	for (cols = 0; cols < SCREEN_W + 1; cols++) {
+		printf("-");
 	}
 	printf("\n");
 	gotoxy(0,0);
@@ -106,11 +116,11 @@ void updateBall(ball *pball) {
 	pball->x += pball->dx;
 	pball->y += pball->dy;
 
-	if (pball->x > SCREEN_W || pball->x < 0 + pball->size)
+	if (pball->x + pball->width >= SCREEN_W || pball->x < 0)
 		pball->dx = -pball->dx;
-	if (pball->y + pball->size > SCREEN_H || pball->y < 1)
+	if (pball->y + pball->height >= SCREEN_H - 1 || pball->y <= 1)
 		pball->dy = -pball->dy;
 
-	drawRect(pball->x, pball->y, pball->size+2, pball->size);
+	drawRect(pball->x, pball->y, pball->width, pball->height);
 
 }
