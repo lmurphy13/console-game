@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <time.h>
+#include <string.h>
 
 #define clear() printf("\033[H\033[J")                  /* clears terminal buffer */
 #define gotoxy(x,y) printf("\033[%d;%dH", (y), (x))     /* moves cursor in terminal buffer */
@@ -15,5 +16,5 @@ void printScreen(screen *);
 int initScreen(screen *);
 void allocScreen(screen *);
 
-void drawRect(screen *, int,int,int,int);     /* x, y, height, width */
+void drawRect(screen *, int,int,int,int,int);     /* x, y, height, width, mode */
 void drawLine(screen *, int,int,int,int);     /* x1, y1, x2, y2 */

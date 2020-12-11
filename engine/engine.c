@@ -1,4 +1,4 @@
-#include "engine.h"
+#include "include/engine.h"
 
 void printScreen(screen *scrn) {
     int rows, cols;
@@ -43,29 +43,58 @@ void allocScreen(screen *scrn) {
         scrn->buf[i] = malloc(scrn->SCREEN_W * sizeof(char));
 }
 
-void drawRect(screen *scrn, int x, int y, int height, int width) {
-    int relY, relX;
+/*
+ * Mode is either 0 for hollow or 1 for filled in
+ */
+void drawRect(screen *scrn, int x, int y, int height, int width, int mode) {
+    if (mode == 0) {
+        height = height - 1;
+        width = width - 1;
 
-    for (relY = y; relY < y + height; relY++) {
-        for (relX = x; relX < x + width; relX++) {
-            scrn->buf[relY][relX] = '#';
+        drawLine(scrn, x, y, x + width, y);                       /* top */
+        drawLine(scrn, x, y + height, x + width, y + height);   /* bottom */
+        drawLine(scrn, x, y, x, y + height);                    /* left */
+        drawLine(scrn, x + width, y, x + width, y + height);    /* right */
+    }
+
+    if (mode == 1) {    
+        int relY, relX;
+
+        for (relY = y; relY < y + height; relY++) {
+            for (relX = x; relX < x + width; relX++) {
+                scrn->buf[relY][relX] = '#';
+            }
         }
     }
 }
 
+/* 
+ * drawn using Bresenham's method 
+ * https://en.wikipedia.org/wiki/Bresenham%27s_line_algorithm
+ */
 void drawLine(screen *scrn, int x1, int y1, int x2, int y2) {
-    int dx = x2 - x1;
-    int dy = y2 - y1;
-    int D = (2 * dy) - dx;
-    int y = y1;
-    int x;
+    int dx, stepx, dy, stepy, error;
+    dx = abs(x2 - x1);
+    if (x1 < x2)
+        stepx = 1;
+    else
+        stepx = -1;
+    dy = -abs(y2 - y1);
+    if (y1 < y2)
+        stepy = 1;
+    else
+        stepy = -1;
+    error = dx + dy;
 
-    for (x = x1; x <= x2; x++) {
-        scrn->buf[x][y] = '#';
-        if (D > 0) {
-            y++;
-            D = D - (2 * dx);
+    while ((x1 != x2 + stepx) && (y1 != y2 + stepy)) {
+        scrn->buf[y1][x1] = '#';
+        if (error * 2 >= dy) {
+            x1 += stepx;
+            error += dy;
         }
-        D = D + (2 * dy);
+        if (error * 2 <= dx) {
+            y1 += stepy;
+            error += dx;
+        }
     }
 }

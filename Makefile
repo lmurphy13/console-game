@@ -7,7 +7,7 @@ ENGINE = engine/engine.c \
 ENGINE_H = engine/include/engine.h
 
 engine:
-	$(CC) -o test $(ENGINE_H).o $(ENGINE)
+	$(CC) -o test $(ENGINE_H) $(ENGINE)
 
 all: 
 	$(CC) -o game $(GAME)
