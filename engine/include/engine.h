@@ -14,7 +14,10 @@ typedef struct {
 
 void printScreen(screen *);
 int initScreen(screen *);
-void allocScreen(screen *);
+void allocScreen(screen *, int,int);                /* height, width */
+void freeScreen(screen *);
 
-void drawRect(screen *, int,int,int,int,int);     /* x, y, height, width, mode */
-void drawLine(screen *, int,int,int,int);     /* x1, y1, x2, y2 */
+void drawRect(screen *, int,int,int,int,int);       /* x, y, height, width, mode */
+void drawLine(screen *, int,int,int,int);           /* x1, y1, x2, y2 */
+void drawPixel(screen *, int, int);                 /* x, y */
+void drawText(screen *, int, int, char *);          /* x, y, string */

@@ -21,6 +21,7 @@ void printScreen(screen *scrn) {
         printf("-");
     }
     printf("\n");
+
     gotoxy(0,0);
 }
 
@@ -35,12 +36,19 @@ int initScreen(screen *scrn) {
     return 1;
 }
 
-void allocScreen(screen *scrn) {
+void allocScreen(screen *scrn, int height, int width) {
+    scrn->SCREEN_H = height;
+    scrn->SCREEN_W = width;
+
     scrn->buf = malloc(scrn->SCREEN_H * sizeof(char *));
     
     int i;
-    for (i = 0; i < scrn->SCREEN_H; i++)
+    for (i = 0; i <= scrn->SCREEN_H; i++)
         scrn->buf[i] = malloc(scrn->SCREEN_W * sizeof(char));
+}
+
+void freeScreen(screen *scrn) {
+    free(scrn->buf);
 }
 
 /*
@@ -62,7 +70,8 @@ void drawRect(screen *scrn, int x, int y, int height, int width, int mode) {
 
         for (relY = y; relY < y + height; relY++) {
             for (relX = x; relX < x + width; relX++) {
-                scrn->buf[relY][relX] = '#';
+                //scrn->buf[relY][relX] = '#';
+                drawPixel(scrn, relX, relY);
             }
         }
     }
@@ -87,7 +96,8 @@ void drawLine(screen *scrn, int x1, int y1, int x2, int y2) {
     error = dx + dy;
 
     while ((x1 != x2 + stepx) && (y1 != y2 + stepy)) {
-        scrn->buf[y1][x1] = '#';
+        //scrn->buf[y1][x1] = '#';
+        drawPixel(scrn, x1, y1);
         if (error * 2 >= dy) {
             x1 += stepx;
             error += dy;
@@ -97,4 +107,20 @@ void drawLine(screen *scrn, int x1, int y1, int x2, int y2) {
             error += dx;
         }
     }
+}
+
+void drawPixel(screen *scrn, int x, int y) {
+    scrn->buf[y][x] = '#';
+}
+
+void drawText(screen *scrn, int x, int y, char *text) {    
+    int i = 0;
+    char c;
+
+    while ( (c = text[i]) != '\0') {
+        scrn->buf[y][x + i] = c;
+        i++;
+    }
+
+    free(text);
 }
