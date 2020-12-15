@@ -2,7 +2,8 @@
 
 void printScreen(screen *scrn) {
     int rows, cols;
-
+    
+    gotoxy(0,0);
     printf("\n");
     for (cols = 0; cols < scrn->SCREEN_W + 1; cols++) {
         printf("-");
@@ -22,7 +23,7 @@ void printScreen(screen *scrn) {
     }
     printf("\n");
 
-    gotoxy(0,0);
+    //gotoxy(0,0);
 }
 
 int initScreen(screen *scrn) {
@@ -121,6 +122,34 @@ void drawText(screen *scrn, int x, int y, char *text) {
         scrn->buf[y][x + i] = c;
         i++;
     }
+}
 
-    free(text);
+int checkKeys() {
+    WINDOW *win = initscr();        /* puts streams into full buffered mode */
+    cbreak();                       /* cbreak mode */
+    nodelay(win, TRUE);             
+
+    timeout(1000);
+    char c = getch();
+
+    if (c == 'a') {
+        endwin();                   
+        setvbuf(stdout, NULL, _IOLBF, 0);   /* restores stdout to non-buffered mode */
+        setvbuf(stderr, NULL, _IONBF, 0);   /* restores stderr to non-buffered mode */
+
+        return -1;
+    }
+    if (c == 'd') {
+        endwin();
+        setvbuf(stdout, NULL, _IOLBF, 0);
+        setvbuf(stderr, NULL, _IONBF, 0);
+
+        return 1;
+    }
+
+    endwin();
+    setvbuf(stdout, NULL, _IOLBF, 0);
+    setvbuf(stderr, NULL, _IONBF, 0);
+
+    return 0;
 }
