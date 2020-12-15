@@ -167,23 +167,29 @@ void drawBall(screen *scrn, ball *b) {
 
 void updateBall(screen *scrn, ball *b, paddle *p, brick *bk) {
     // detect screen edge collisions
-    if (b->x + b->size + 2 >= scrn->SCREEN_W || b->x <= 0)
+    if (b->x + b->size + 2 >= scrn->SCREEN_W || b->x <= 0) {
         b->dx = -b->dx;
-    if (b->y <= 0)
+        putchar(7);
+    }
+    if (b->y <= 0) {
         b->dy = -b->dy;
+        putchar(7);
+    }
 
     // ball hits the floor, so we subtract a life and reset level
-    if (b->y + b->size + 1 >= scrn->SCREEN_H) {
+    if (b->y + b->size >= scrn->SCREEN_H) {
         lives -= 1;
-
+        putchar(7);
         resetLevel(b);
     }
 
     // paddle collisions
     if (b->y + b->size >= p->y
         && b->x >= p->x
-        && b->x + b->size <= p->x + p->length)
+        && b->x + b->size <= p->x + p->length) {
         b->dy = -b->dy;
+        putchar(7);
+    }
 
     // brick collisions
     
@@ -191,10 +197,11 @@ void updateBall(screen *scrn, ball *b, paddle *p, brick *bk) {
         && b->x + b->size+1 <= bk->x + bk->length
         && b->y <= bk->y + bk->height
         && b->y + b->size >= bk->y) && (bk->state == 1)) {
-        
+
         bk->state = 0;
         score++;
         b->dx = -b->dx;
+        putchar(7);
     }
 }
 
