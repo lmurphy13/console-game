@@ -127,29 +127,24 @@ void drawText(screen *scrn, int x, int y, char *text) {
 int checkKeys() {
     WINDOW *win = initscr();        /* puts streams into full buffered mode */
     cbreak();                       /* cbreak mode */
-    nodelay(win, TRUE);             
+    nodelay(win, TRUE);
+    int retval = 0;          
 
-    timeout(1000);
+    timeout(100);
     char c = getch();
 
     if (c == 'a') {
-        endwin();                   
-        setvbuf(stdout, NULL, _IOLBF, 0);   /* restores stdout to non-buffered mode */
-        setvbuf(stderr, NULL, _IONBF, 0);   /* restores stderr to non-buffered mode */
 
-        return -1;
+        retval = -1;
     }
     if (c == 'd') {
-        endwin();
-        setvbuf(stdout, NULL, _IOLBF, 0);
-        setvbuf(stderr, NULL, _IONBF, 0);
 
-        return 1;
+        retval = 1;
     }
 
-    endwin();
-    setvbuf(stdout, NULL, _IOLBF, 0);
-    setvbuf(stderr, NULL, _IONBF, 0);
+    endwin();                   
+    setvbuf(stdout, NULL, _IOLBF, 0);   /* restores stdout to non-buffered mode */
+    setvbuf(stderr, NULL, _IONBF, 0);   /* restores stderr to non-buffered mode */
 
-    return 0;
+    return retval;
 }
